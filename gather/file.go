@@ -28,7 +28,7 @@ func NewGatherWorker(gf *GatherFile) *GatherWorker {
 
 //
 func (gw *GatherWorker) ParseLine(line *string, regexpLine *regexp.Regexp, regexpTags map[string]*regexp.Regexp, item *GatherItem) (float64, string, error) {
-	value := float64(1)
+	value := float64(0)
 	tag_key := ""
 
 	lineMathch := regexpLine.FindStringSubmatch(*line)
@@ -89,7 +89,7 @@ func (gw *GatherWorker) ReportData(item *GatherItem, tagsStat map[string]*Gather
 
 	var resp model.TransferResponse
 	g.SendMetrics(mertics, &resp)
-	log.Printf("=> total:%d resp:%v\n", len(mertics), resp)
+	log.Printf("=> metric:%s total:%d resp:%v\n", mertics[0].Metric, len(mertics), resp)
 	for i, me := range mertics {
 		log.Printf("==> idx:%d mertic:%v \n", i, me)
 	}
