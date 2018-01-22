@@ -3,11 +3,13 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
+
 	"github.com/open-falcon/agent/cron"
 	"github.com/open-falcon/agent/funcs"
 	"github.com/open-falcon/agent/g"
+	"github.com/open-falcon/agent/gather"
 	"github.com/open-falcon/agent/http"
-	"os"
 )
 
 func main() {
@@ -15,6 +17,8 @@ func main() {
 	cfg := flag.String("c", "cfg.json", "configuration file")
 	version := flag.Bool("v", false, "show version")
 	check := flag.Bool("check", false, "check collector")
+
+	gatherCfg := flag.String("gather", "gather.json", "gather configuration file")
 
 	flag.Parse()
 
@@ -27,6 +31,10 @@ func main() {
 		funcs.CheckCollector()
 		os.Exit(0)
 	}
+
+
+	gather.Init(*gatherCfg)
+	go gather.Run()
 
 	g.ParseConfig(*cfg)
 
