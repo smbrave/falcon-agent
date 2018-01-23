@@ -192,18 +192,19 @@ func (gw *GatherWorker) Worker() {
 			log.Println("open file:", gw.GFile.File, "error:", err.Error())
 			continue
 		}
-		defer fd.Close()
 
 		//获取文件统计信息
 		fileInfo, err := fd.Stat()
 		if err != nil {
 			log.Println("file:", gw.GFile.File, "stat error:", err.Error())
+			fd.Close()
 			continue
 		}
 
 		//没有新增内容
 		fileSzie := fileInfo.Size()
 		if gw.ReadPos == fileSzie {
+			fd.Close()
 			continue
 		}
 
@@ -211,6 +212,7 @@ func (gw *GatherWorker) Worker() {
 		if gw.ReadPos > fileSzie {
 			log.Println("file:", gw.GFile.File, "size:", fileSzie, "read:", gw.ReadPos)
 			gw.ReadPos = 0
+			fd.Close()
 			continue
 		}
 
@@ -261,12 +263,13 @@ func (gw *GatherWorker) Worker() {
 				}
 			}
 
-			//修改读取便宜
+			//修改读取偏移
 			gw.ReadPos += int64(readLen)
 			if gw.ReadPos >= fileSzie {
 				break
 			}
 		}
+		fd.Close()
 
 	}
 }
