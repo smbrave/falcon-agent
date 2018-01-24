@@ -89,7 +89,7 @@ func (gw *GatherWorker) ReportData(item *GatherItem, tagsStat map[string]*Gather
 
 	var resp model.TransferResponse
 	g.SendMetrics(mertics, &resp)
-	log.Printf("=> metric:%s total:%d resp:%v\n", mertics[0].Metric, len(mertics), resp)
+	log.Printf("=> metric:%s total:%d resp:%s\n", mertics[0].Metric, len(mertics), resp.String())
 	for i, me := range mertics {
 		log.Printf("==> idx:%d mertic:%v \n", i, me)
 	}
