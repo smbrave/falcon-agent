@@ -61,7 +61,7 @@ func (gw *GatherWorker) ReportData(item *GatherItem, tagsStat map[string]*Gather
 		return
 	}
 	tp := strings.ToUpper(item.Type)
-	hostname, _ := os.Hostname()
+	hostname, _ := g.Hostname()
 	mertics := make([]*model.MetricValue, 0)
 	for k, v := range tagsStat {
 		metric := new(model.MetricValue)
