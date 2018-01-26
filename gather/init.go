@@ -63,7 +63,7 @@ type GatherFile struct {
 	GatherStep int          `json:"gather_step"` //采集间隔 默认10s
 	ReportStep int          `json:"report_step"` //上报间隔 默认60s
 	File       string       `json:"file"`        //文件名
-	Format     string       `json:"foramt"`      //时间格式 默认:2006-01-02 15:04:05
+	Format     string       `json:"format"`      //时间格式 默认:2006-01-02 15:04:05
 	Items      []GatherItem `json:"items"`       //采集项目
 }
 
