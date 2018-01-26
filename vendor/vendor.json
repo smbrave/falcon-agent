@@ -1,0 +1,61 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "V1CPhLg28hDpvqwyp6/zeyHCwsw=",
+			"path": "github.com/open-falcon/common/model",
+			"revision": "b9ba65549217ef89b4d1d05d8eb58fe493e5f982",
+			"revisionTime": "2016-09-12T14:56:37Z"
+		},
+		{
+			"checksumSHA1": "KB8Kcyx85OMt19yKtwQO3ig+j/0=",
+			"path": "github.com/open-falcon/common/utils",
+			"revision": "b9ba65549217ef89b4d1d05d8eb58fe493e5f982",
+			"revisionTime": "2016-09-12T14:56:37Z"
+		},
+		{
+			"checksumSHA1": "ddT2jJ++XzLIFZxHl21pL+i3e3Q=",
+			"path": "github.com/toolkits/core",
+			"revision": "0ebf14900fe2ef12a8a19a0c04711538531d51e3",
+			"revisionTime": "2014-11-16T05:49:42Z"
+		},
+		{
+			"checksumSHA1": "XqTDLy8bXAGifWuqK+OgvxOFgeU=",
+			"path": "github.com/toolkits/file",
+			"revision": "a5b3c5147e07f934d9f9d00b901a20b2529f1a57",
+			"revisionTime": "2016-03-25T03:37:39Z"
+		},
+		{
+			"checksumSHA1": "qMNq28HlS5CkK9bPmqOh6p7DEWg=",
+			"path": "github.com/toolkits/net",
+			"revision": "3f39ab6fe3cec98207da42dab32703b498ed92e4",
+			"revisionTime": "2016-09-10T08:58:01Z"
+		},
+		{
+			"checksumSHA1": "XOybQZKOKDGV+tz9euIhA8OhL/Q=",
+			"path": "github.com/toolkits/nux",
+			"revision": "d5bf087ae58de8d83fbb04a0a8c8e9d739cb9620",
+			"revisionTime": "2017-06-15T08:01:54Z"
+		},
+		{
+			"checksumSHA1": "131iZM8IsGB/fsQdkMz+GXMQ9+g=",
+			"path": "github.com/toolkits/slice",
+			"revision": "e44a80af24848e28cf208d84778e62e660303159",
+			"revisionTime": "2014-11-16T08:51:17Z"
+		},
+		{
+			"checksumSHA1": "hNhvRpOJSA61+Qf84pvRaqLKo8A=",
+			"path": "github.com/toolkits/sys",
+			"revision": "1f33b217ffafd62561fa8f5b4977dfe3099f47e3",
+			"revisionTime": "2017-06-15T10:30:26Z"
+		},
+		{
+			"checksumSHA1": "vr5ILARPlQtXBhQAz6jWEI7yXGo=",
+			"path": "github.com/toolkits/time",
+			"revision": "c274716e8d7f05a41031c2fe34b0c1ac6f5e94f9",
+			"revisionTime": "2016-05-24T12:27:20Z"
+		}
+	],
+	"rootPath": "github.com/open-falcon/agent"
+}
