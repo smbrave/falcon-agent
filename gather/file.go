@@ -223,9 +223,7 @@ func (gw *GatherWorker) Worker() {
 				log.Println("file:", gw.GFile.File, "read at error:", err.Error())
 				break
 			}
-
-			//没有新数据
-			if readLen == 0 && err == io.EOF {
+			if readLen == 0 {
 				break
 			}
 
