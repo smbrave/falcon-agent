@@ -240,7 +240,7 @@ func (gw *GatherWorker) Worker() {
 				}
 
 				//获取日志的时间
-				logTime, err := gw.GetLineTime(&line)
+				logTime, err := GetLineTime(&line, &gw.GFile.Format)
 				if err != nil {
 					log.Println("line:", line, "time format error:", err.Error())
 					continue
@@ -273,14 +273,14 @@ func (gw *GatherWorker) Worker() {
 }
 
 //获取日志时间
-func (gw *GatherWorker) GetLineTime(line *string) (*time.Time, error) {
+func GetLineTime(line *string, format *string) (*time.Time, error) {
 
 	timeStr := strings.TrimLeft(*line, "\r\n\t ")
-	if len(timeStr) < len(gw.GFile.Format) {
+	if len(timeStr) < len(*format) {
 		return nil, errors.New("time len error")
 	}
 
-	t, err := time.ParseInLocation(gw.GFile.Format, timeStr[0:len(gw.GFile.Format)], localtion)
+	t, err := time.ParseInLocation(*format, timeStr[0:len(*format)], localtion)
 	return &t, err
 }
 

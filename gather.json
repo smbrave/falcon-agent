@@ -1,0 +1,27 @@
+{
+  "enable": 1,
+  "files": [
+    {
+      "enable": 1,
+      "file": "/data/uxin/logs/report_server/run.log",
+      "format": "2006/01/02 15:04:05",
+      "gather_step": 5,
+      "report_step" : 10,
+      "items": [
+        {
+          "enable":1,
+          "rule": "\\[cost=(.*?)\\]",
+          "type" : "GAUGE",
+          "metric": "test.a"
+        },
+        {
+          "rule": "p=youxin8",
+          "tags": [
+            "version=;v=(.*?);"
+          ],
+          "metric": "test.b"
+        }
+      ]
+    }
+  ]
+}

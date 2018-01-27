@@ -3,7 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"os"
+	"strings"
 
 	"github.com/open-falcon/agent/cron"
 	"github.com/open-falcon/agent/funcs"
@@ -19,6 +21,7 @@ func main() {
 	check := flag.Bool("check", false, "check collector")
 
 	gatherCfg := flag.String("gather", "gather.json", "gather configuration file")
+	gatherCheck := flag.String("gather-check", "gather.txt", "gather test file")
 
 	flag.Parse()
 
@@ -31,7 +34,18 @@ func main() {
 		funcs.CheckCollector()
 		os.Exit(0)
 	}
-
+	if *gatherCheck != "" {
+		gather.Init(*gatherCfg)
+		body, _ := ioutil.ReadFile(*gatherCheck)
+		lines := strings.Split(string(body), "\n")
+		for _, line := range lines {
+			if len(line) == 0 {
+				continue
+			}
+			gather.Test(line)
+		}
+		os.Exit(0)
+	}
 
 	gather.Init(*gatherCfg)
 	go gather.Run()
