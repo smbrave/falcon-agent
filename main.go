@@ -21,7 +21,7 @@ func main() {
 	check := flag.Bool("check", false, "check collector")
 
 	gatherCfg := flag.String("gather", "gather.json", "gather configuration file")
-	gatherCheck := flag.String("gather-check", "gather.txt", "gather test file")
+	gatherCheck := flag.String("gather-check", "", "gather test file")
 
 	flag.Parse()
 
