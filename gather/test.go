@@ -12,7 +12,7 @@ func Test(line string) {
 	for _, file := range config.Files {
 		t, err := GetLineTime(&line, &file.Format)
 		if err != nil {
-			log.Println("GetLineTime err:", err.Error(), "line:", line)
+			//log.Println("GetLineTime err:", err.Error(), "line:", line)
 			continue
 		}
 		for _, item := range file.Items {
