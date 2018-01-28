@@ -10,11 +10,7 @@ import (
 func Test(line string) {
 
 	for _, file := range config.Files {
-		t, err := GetLineTime(&line, &file.Format)
-		if err != nil {
-			//log.Println("GetLineTime err:", err.Error(), "line:", line)
-			continue
-		}
+
 		for _, item := range file.Items {
 			lineRegexpMap, err := regexp.Compile(item.Rule)
 			if err != nil {
@@ -33,8 +29,8 @@ func Test(line string) {
 				value, _ = strconv.ParseFloat(lineMathch[1], 64)
 			}
 			if len(item.Tags) == 0 {
-				log.Printf("metric:%s time:%s value:%.6f\n",
-					item.Metric, t.Format("2006-01-02 15:04:05"), value)
+				log.Printf("metric:%s value:%.6f\n",
+					item.Metric, value)
 			}
 			for _, tag := range item.Tags {
 				fields := strings.SplitN(tag, "=", 2)
@@ -48,8 +44,8 @@ func Test(line string) {
 					continue
 				}
 				if len(tagMatch) >= 2 {
-					log.Printf("metric:%s time:%s value:%.6f tag:%s\n",
-						item.Metric, t.Format("2006-01-02 15:04:05"), value, tagMatch[1])
+					log.Printf("metric:%s value:%.6f tag:%s\n",
+						item.Metric, value, tagMatch[1])
 				}
 			}
 

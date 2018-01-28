@@ -1,18 +1,20 @@
 {
-  "enable": 1,
+  "enable": true,
   "files": [
     {
-      "enable": 1,
+      "enable": false,
       "file": "/data/uxin/logs/report_server/run.log",
       "format": "2006/01/02 15:04:05",
       "gather_step": 5,
       "report_step" : 10,
       "items": [
         {
-          "enable":1,
           "rule": "\\[cost=(.*?)\\]",
           "type" : "GAUGE",
-          "metric": "test.a"
+          "metric": "test.a",
+          "tags": [
+            "url=\\[url=(.*?)\\]"
+          ]
         },
         {
           "rule": "p=youxin8",
