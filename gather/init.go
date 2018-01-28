@@ -11,9 +11,8 @@ import (
 )
 
 const (
-	UNKNOWN = 0
 	ENABLE  = 1
-	DISABLE = 2
+	DISABLE = 0
 )
 
 var (
@@ -51,7 +50,6 @@ func (gs *GatherStat) Rest() {
 }
 
 type GatherItem struct {
-	Enable int      `json:"enable"` //是否启用
 	Metric string   `json:"metric"` //指标名称
 	Rule   string   `json:"rule"`   //采集正则表达式
 	Tags   []string `json:"tags"`   //key=正则表达式
@@ -59,7 +57,7 @@ type GatherItem struct {
 }
 
 type GatherFile struct {
-	Enable     int          `json:"enable"`      //是否启用
+	Enable     bool         `json:"enable"`      //是否启用
 	GatherStep int          `json:"gather_step"` //采集间隔 默认10s
 	ReportStep int          `json:"report_step"` //上报间隔 默认60s
 	File       string       `json:"file"`        //文件名
@@ -68,7 +66,7 @@ type GatherFile struct {
 }
 
 type Config struct {
-	Enable int          `json:"enable"` //是否启用
+	Enable bool         `json:"enable"` //是否启用
 	Files  []GatherFile `json:"files"`  //需要采集的文件
 }
 
@@ -85,15 +83,9 @@ func Init(cfgFile string) {
 		panic(err)
 	}
 
-	if config.Enable == UNKNOWN {
-		config.Enable = ENABLE
-	}
-
 	//设置默认值和校验
 	for i, gf := range config.Files {
-		if gf.Enable == UNKNOWN {
-			config.Files[i].Enable = ENABLE
-		}
+
 		if gf.ReportStep == 0 {
 			config.Files[i].ReportStep = 10 //上报间隔
 		}
@@ -123,10 +115,6 @@ func Init(cfgFile string) {
 				if err != nil {
 					panic(err)
 				}
-			}
-
-			if item.Enable == UNKNOWN {
-				config.Files[i].Items[j].Enable = ENABLE
 			}
 
 			if item.Type == "" {

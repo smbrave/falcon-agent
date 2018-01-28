@@ -286,12 +286,12 @@ func GetLineTime(line *string, format *string) (*time.Time, error) {
 
 //启动所有采集任务
 func Run() {
-	if config.Enable == DISABLE {
+	if config.Enable == false {
 		return
 	}
 
 	for i, gf := range config.Files {
-		if gf.Enable == DISABLE {
+		if gf.Enable == false {
 			continue
 		}
 		fmt.Println(fmt.Sprintf("gather_file:%+v", gf))
