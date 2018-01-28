@@ -58,7 +58,6 @@ type GatherItem struct {
 
 type GatherFile struct {
 	Enable     bool         `json:"enable"`      //是否启用
-	GatherStep int          `json:"gather_step"` //采集间隔 默认10s
 	ReportStep int          `json:"report_step"` //上报间隔 默认60s
 	File       string       `json:"file"`        //文件名
 	Format     string       `json:"format"`      //时间格式 默认:2006-01-02 15:04:05
@@ -88,10 +87,6 @@ func Init(cfgFile string) {
 
 		if gf.ReportStep == 0 {
 			config.Files[i].ReportStep = 10 //上报间隔
-		}
-
-		if gf.GatherStep == 0 {
-			config.Files[i].GatherStep = 1 //采集周期
 		}
 
 		if gf.Format == "" {

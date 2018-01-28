@@ -2,19 +2,17 @@ package gather
 
 import (
 	"fmt"
-	"io"
 	"log"
-	"os"
 	"sort"
 	"strings"
 	"time"
 
-	"bytes"
 	"errors"
 	"regexp"
 
 	"strconv"
 
+	"github.com/hpcloud/tail"
 	"github.com/open-falcon/agent/g"
 	"github.com/open-falcon/common/model"
 )
@@ -181,94 +179,25 @@ func (gw *GatherWorker) Worker() {
 		go gw.SubWorker(ch, &gw.GFile.Items[i])
 	}
 
-	buf := make([]byte, 1024*1024)
-	ticker := time.NewTicker(time.Second * time.Duration(gw.GFile.GatherStep))
-	defer ticker.Stop()
-
-	for _ = range ticker.C {
-		//打开文件
-		fd, err := os.Open(gw.GFile.File)
+	var tailConfig tail.Config
+	tailConfig.Follow = true
+	for {
+		t, err := tail.TailFile(gw.GFile.File, tailConfig)
 		if err != nil {
-			log.Println("open file:", gw.GFile.File, "error:", err.Error())
+			log.Println("file:", gw.GFile.File, "error:", err.Error())
 			continue
 		}
 
-		//获取文件统计信息
-		fileInfo, err := fd.Stat()
-		if err != nil {
-			log.Println("file:", gw.GFile.File, "stat error:", err.Error())
-			fd.Close()
-			continue
-		}
+		for line := range t.Lines {
+			logInfo := new(LogInfo)
+			logInfo.LogLine = &line.Text
+			logInfo.LogTime = &line.Time
 
-		//没有新增内容
-		fileSzie := fileInfo.Size()
-		if gw.ReadPos == fileSzie {
-			fd.Close()
-			continue
-		}
-
-		//文件有滚动或重写
-		if gw.ReadPos > fileSzie {
-			log.Println("file:", gw.GFile.File, "size:", fileSzie, "read:", gw.ReadPos)
-			gw.ReadPos = 0
-			fd.Close()
-			continue
-		}
-
-		//读完当前更新的所有数据
-		for {
-			readLen, err := fd.ReadAt(buf, gw.ReadPos)
-			if err != nil && err != io.EOF {
-				log.Println("file:", gw.GFile.File, "read at error:", err.Error())
-				break
-			}
-			if readLen == 0 {
-				break
-			}
-
-			readLen = bytes.LastIndex(buf[0:readLen], []byte("\n"))
-			if readLen == -1 {
-				break
-			}
-
-			//读取到的数据
-			lines := strings.Split(string(buf[0:readLen]), "\n")
-			for i, line := range lines {
-				if len(line) == 0 {
-					continue
-				}
-
-				//获取日志的时间
-				logTime, err := GetLineTime(&line, &gw.GFile.Format)
-				if err != nil {
-					log.Println("line:", line, "time format error:", err.Error())
-					continue
-				}
-
-				//丢弃一个上报周期之前的日志
-				if logTime.Add(time.Second * time.Duration(gw.GFile.ReportStep)).Before(time.Now()) {
-					continue
-				}
-
-				logInfo := new(LogInfo)
-				logInfo.LogLine = &lines[i]
-				logInfo.LogTime = logTime
-
-				//发送给每个采集子任务
-				for _, ch := range gw.DataChan {
-					ch <- logInfo
-				}
-			}
-
-			//修改读取偏移
-			gw.ReadPos += int64(readLen)
-			if gw.ReadPos >= fileSzie {
-				break
+			//发送给每个采集子任务
+			for _, ch := range gw.DataChan {
+				ch <- logInfo
 			}
 		}
-		fd.Close()
-
 	}
 }
 
