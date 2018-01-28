@@ -294,7 +294,7 @@ func Run() {
 		if gf.Enable == false {
 			continue
 		}
-		fmt.Println(fmt.Sprintf("gather_file:%+v", gf))
+		log.Println(fmt.Sprintf("gather_file:%+v", gf))
 		gw := NewGatherWorker(&config.Files[i])
 		go gw.Worker()
 	}
