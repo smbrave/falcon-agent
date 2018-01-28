@@ -181,10 +181,12 @@ func (gw *GatherWorker) Worker() {
 
 	var tailConfig tail.Config
 	tailConfig.Follow = true
+	tailConfig.ReOpen = true
 	for {
 		t, err := tail.TailFile(gw.GFile.File, tailConfig)
 		if err != nil {
 			log.Println("file:", gw.GFile.File, "error:", err.Error())
+			time.Sleep(time.Second)
 			continue
 		}
 
