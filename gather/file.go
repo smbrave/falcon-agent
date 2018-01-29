@@ -182,6 +182,16 @@ func (gw *GatherWorker) Worker() {
 	var tailConfig tail.Config
 	tailConfig.Follow = true
 	tailConfig.ReOpen = true
+
+	//从当前文件位置开始tail
+	fd, err := tail.OpenFile(gw.GFile.File)
+	if err == nil {
+		statInfo, _ := fd.Stat()
+		tailConfig.Location = new(tail.SeekInfo)
+		tailConfig.Location.Offset = statInfo.Size()
+	}
+
+	//tail文件
 	for {
 		t, err := tail.TailFile(gw.GFile.File, tailConfig)
 		if err != nil {
