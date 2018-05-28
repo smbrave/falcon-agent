@@ -196,8 +196,7 @@ func (gw *GatherWorker) Worker() {
 		t, err := tail.TailFile(gw.GFile.File, tailConfig)
 		if err != nil {
 			log.Println("file:", gw.GFile.File, "error:", err.Error())
-			time.Sleep(time.Second)
-			continue
+
 		}
 
 		for line := range t.Lines {
