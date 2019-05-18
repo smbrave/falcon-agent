@@ -3,14 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"os"
-	"strings"
 
 	"github.com/open-falcon/agent/cron"
 	"github.com/open-falcon/agent/funcs"
 	"github.com/open-falcon/agent/g"
-	"github.com/open-falcon/agent/gather"
+	"github.com/open-falcon/agent/gatherv2"
 	"github.com/open-falcon/agent/http"
 )
 
@@ -19,9 +17,6 @@ func main() {
 	cfg := flag.String("c", "cfg.json", "configuration file")
 	version := flag.Bool("v", false, "show version")
 	check := flag.Bool("check", false, "check collector")
-
-	gatherCfg := flag.String("gather", "gather.json", "gather configuration file")
-	gatherCheck := flag.String("gather-check", "", "gather test file")
 
 	flag.Parse()
 
@@ -34,21 +29,6 @@ func main() {
 		funcs.CheckCollector()
 		os.Exit(0)
 	}
-	if *gatherCheck != "" {
-		gather.Init(*gatherCfg)
-		body, _ := ioutil.ReadFile(*gatherCheck)
-		lines := strings.Split(string(body), "\n")
-		for _, line := range lines {
-			if len(line) == 0 {
-				continue
-			}
-			gather.Test(line)
-		}
-		os.Exit(0)
-	}
-
-	gather.Init(*gatherCfg)
-	go gather.Run()
 
 	g.ParseConfig(*cfg)
 
@@ -59,6 +39,7 @@ func main() {
 	funcs.BuildMappers()
 
 	go cron.InitDataHistory()
+	go gatherv2.Run()
 
 	cron.ReportAgentStatus()
 	cron.SyncMinePlugins()

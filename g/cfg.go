@@ -41,6 +41,7 @@ type CollectorConfig struct {
 }
 
 type GlobalConfig struct {
+	Falcon        string           `json:"falcon"`
 	Debug         bool             `json:"debug"`
 	Hostname      string           `json:"hostname"`
 	IP            string           `json:"ip"`

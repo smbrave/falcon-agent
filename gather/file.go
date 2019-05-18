@@ -1,16 +1,13 @@
 package gather
 
 import (
+	"errors"
 	"fmt"
-	"log"
+	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
-
-	"errors"
-	"regexp"
-
-	"strconv"
 
 	"github.com/hpcloud/tail"
 	"github.com/open-falcon/agent/g"
@@ -87,9 +84,9 @@ func (gw *GatherWorker) ReportData(item *GatherItem, tagsStat map[string]*Gather
 
 	var resp model.TransferResponse
 	g.SendMetrics(mertics, &resp)
-	log.Printf("=> metric:%s resp:%s\n", mertics[0].Metric, resp.String())
+	fmt.Printf("=> metric:%s resp:%s\n", mertics[0].Metric, resp.String())
 	for i, me := range mertics {
-		log.Printf("==> idx:%d mertic:%v \n", i, me)
+		fmt.Printf("==> idx:%d mertic:%v \n", i, me)
 	}
 }
 
@@ -153,7 +150,6 @@ func (gw *GatherWorker) SubWorker(ch chan *LogInfo, item *GatherItem) {
 		case logInfo := <-ch:
 			value, tag_key, err := gw.ParseLine(logInfo.LogLine, lineRegexpMap, tagRegexpMap, item)
 			if err != nil {
-				//log.Println("line:", logInfo.LogLine, "error:", err.Error())
 				continue
 			}
 			gw.GatherData(tag_key, value, tagsStat)
@@ -185,7 +181,7 @@ func (gw *GatherWorker) Worker() {
 	for {
 		t, err := tail.TailFile(gw.GFile.File, tailConfig)
 		if err != nil {
-			log.Println("file:", gw.GFile.File, "error:", err.Error())
+			fmt.Println("file:", gw.GFile.File, "error:", err.Error())
 			time.Sleep(time.Second)
 			continue
 		}
@@ -225,7 +221,7 @@ func Run() {
 		if gf.Enable == false {
 			continue
 		}
-		log.Println(fmt.Sprintf("gather_file:%+v", gf))
+		fmt.Println(fmt.Sprintf("gather_file:%+v", gf))
 		gw := NewGatherWorker(&config.Files[i])
 		go gw.Worker()
 	}
