@@ -112,6 +112,7 @@ func (w *RuleWatcher) ReportData(tagStat map[string]*GatherStat) {
 		metric.Timestamp = time.Now().Unix()
 		metric.Endpoint = hostname
 		metric.Type = "GAUGE"
+		metric.Value = 0
 		mertics = append(mertics, metric)
 		var resp model.TransferResponse
 		g.SendMetrics(mertics, &resp)
