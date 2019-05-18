@@ -100,12 +100,25 @@ func (w *RuleWatcher) ParseLine(line *tail.Line) (float64, string, error) {
 }
 
 func (w *RuleWatcher) ReportData(tagStat map[string]*GatherStat) {
-	if len(tagStat) == 0 {
-		return
-	}
-	tp := strings.ToUpper(w.Rule.Type)
 	hostname, _ := g.Hostname()
 	mertics := make([]*model.MetricValue, 0)
+
+	//没有报个0
+	if len(tagStat) == 0 {
+		metric := new(model.MetricValue)
+		metric.Metric = w.Rule.Metric
+		metric.Tags = ""
+		metric.Step = int64(w.FileWatcher.MFile.Step)
+		metric.Timestamp = time.Now().Unix()
+		metric.Endpoint = hostname
+		metric.Type = "GAUGE"
+		mertics = append(mertics, metric)
+		var resp model.TransferResponse
+		g.SendMetrics(mertics, &resp)
+		return
+	}
+
+	tp := strings.ToUpper(w.Rule.Type)
 	for k, v := range tagStat {
 		metric := new(model.MetricValue)
 		metric.Metric = w.Rule.Metric
