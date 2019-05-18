@@ -37,13 +37,14 @@ func Monitor(url string) *AgentData {
 	lastVersion = rsp.Data.Update
 	return rsp.Data
 }
+
 func Update(data *AgentData) {
 
 	//如果有任务在运行先停止任务
 	if fileWatcher != nil && len(fileWatcher) != 0 {
 		for _, fw := range fileWatcher {
 			if err := fw.Stop(); err != nil {
-				fmt.Println("file:", fw.MFile.File, "stop error:", err.Error())
+				fmt.Println("[ERROR] file:", fw.MFile.File, "stop error:", err.Error())
 				continue
 			}
 		}
@@ -54,7 +55,7 @@ func Update(data *AgentData) {
 	for _, file := range data.Files {
 		fw := NewFileWatcher(file)
 		if err := fw.Start(); err != nil {
-			fmt.Println("file:", ObjectString(file), "error:", err.Error())
+			fmt.Println("[ERROR] file:", ObjectString(file), "error:", err.Error())
 			continue
 		}
 		fileWatcher = append(fileWatcher, fw)
@@ -63,8 +64,9 @@ func Update(data *AgentData) {
 }
 
 func Run() {
-	ticker := time.NewTicker(3 * time.Second)
-	url := g.Config().Falcon
+	ticker := time.NewTicker(10 * time.Second)
+	hostname, _ := g.Hostname()
+	url := g.Config().Falcon + "?hostname=" + hostname
 	data := Monitor(url)
 	if data != nil {
 		fmt.Println("[data]", ObjectString(data))
