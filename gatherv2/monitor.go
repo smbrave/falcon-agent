@@ -2,7 +2,7 @@ package gatherv2
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 	"time"
 
 	"github.com/open-falcon/agent/g"
@@ -17,17 +17,17 @@ var (
 func Monitor(url string) *AgentData {
 	resp, err := httplib.Get(url).Header("ak", "58a72222d1b7e5ab5a2b3c95a0dda245").Bytes()
 	if err != nil {
-		fmt.Println("[ERROR] url:", url, "error:", err.Error())
+		log.Println("[ERROR] url:", url, "error:", err.Error())
 		return nil
 	}
 
 	var rsp ConfigResponse
 	if err := json.Unmarshal(resp, &rsp); err != nil {
-		fmt.Println("[ERROR] url:", url, "body:", string(resp), "error:", err.Error())
+		log.Println("[ERROR] url:", url, "body:", string(resp), "error:", err.Error())
 		return nil
 	}
 	if rsp.Errno != 0 {
-		fmt.Println("[ERROR] url:", url, "body:", string(resp), "errno:", rsp.Errno, "message:", rsp.Errmsg)
+		log.Println("[ERROR] url:", url, "body:", string(resp), "errno:", rsp.Errno, "message:", rsp.Errmsg)
 		return nil
 	}
 
@@ -44,7 +44,7 @@ func Update(data *AgentData) {
 	if fileWatcher != nil && len(fileWatcher) != 0 {
 		for _, fw := range fileWatcher {
 			if err := fw.Stop(); err != nil {
-				fmt.Println("[ERROR] file:", fw.MFile.File, "stop error:", err.Error())
+				log.Println("[ERROR] file:", fw.MFile.File, "stop error:", err.Error())
 				continue
 			}
 		}
@@ -55,7 +55,7 @@ func Update(data *AgentData) {
 	for _, file := range data.Files {
 		fw := NewFileWatcher(file)
 		if err := fw.Start(); err != nil {
-			fmt.Println("[ERROR] file:", ObjectString(file), "error:", err.Error())
+			log.Println("[ERROR] file:", ObjectString(file), "error:", err.Error())
 			continue
 		}
 		fileWatcher = append(fileWatcher, fw)
@@ -69,7 +69,7 @@ func Run() {
 	url := g.Config().Falcon + "?hostname=" + hostname
 	data := Monitor(url)
 	if data != nil {
-		fmt.Println("[data]", ObjectString(data))
+		log.Println("[data]", ObjectString(data))
 		Update(data)
 	}
 
@@ -78,7 +78,7 @@ func Run() {
 		case <-ticker.C:
 			data := Monitor(url)
 			if data != nil {
-				fmt.Println("[data]", ObjectString(data))
+				log.Println("[data]", ObjectString(data))
 				Update(data)
 			}
 		}

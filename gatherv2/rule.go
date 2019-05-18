@@ -2,6 +2,7 @@ package gatherv2
 
 import (
 	"fmt"
+	"log"
 	"regexp"
 	"sort"
 	"strconv"
@@ -135,7 +136,7 @@ func (w *RuleWatcher) ReportData(tagStat map[string]*GatherStat) {
 	g.SendMetrics(mertics, &resp)
 	fmt.Printf("=> metric:%s resp:%s\n", mertics[0].Metric, resp.String())
 	for i, me := range mertics {
-		fmt.Printf("==> idx:%d mertic:%v \n", i, me)
+		log.Printf("==> idx:%d mertic:%v \n", i, me)
 	}
 
 }
@@ -163,7 +164,7 @@ func (w *RuleWatcher) Run() {
 		}
 	}
 exit:
-	fmt.Println("[INFO] file:", w.FileWatcher.MFile.File, "metric:", w.Rule.Metric, "stoped")
+	log.Println("[INFO] file:", w.FileWatcher.MFile.File, "metric:", w.Rule.Metric, "stoped")
 }
 
 func (w *RuleWatcher) Start() error {
@@ -172,7 +173,7 @@ func (w *RuleWatcher) Start() error {
 	w.TagRegexp = make(map[string]*regexp.Regexp)
 	w.LineRegexp, err = regexp.Compile(w.Rule.Match)
 	if err != nil {
-		fmt.Println("[ERROR] metric:", w.Rule.Metric, "match:", w.Rule.Match, "error:", err.Error())
+		log.Println("[ERROR] metric:", w.Rule.Metric, "match:", w.Rule.Match, "error:", err.Error())
 		return err
 	}
 
@@ -180,14 +181,14 @@ func (w *RuleWatcher) Start() error {
 		fields := strings.SplitN(tag, "=", 2)
 		reg, err := regexp.Compile(fields[1])
 		if err != nil {
-			fmt.Println("[ERROR] metric:", w.Rule.Metric, "tag:", tag, "error:", err.Error())
+			log.Println("[ERROR] metric:", w.Rule.Metric, "tag:", tag, "error:", err.Error())
 			return err
 		}
 
 		w.TagRegexp[fields[0]] = reg
 	}
 
-	fmt.Println("[INFO] metric:", w.Rule.Metric, "start success ")
+	log.Println("[INFO] metric:", w.Rule.Metric, "start success ")
 
 	go w.Run()
 	return nil
@@ -203,7 +204,7 @@ func (w *RuleWatcher) Notify(line *tail.Line) {
 	select {
 	case w.Lines <- line:
 	default:
-		fmt.Println("[ERROR] metric:", w.Rule.Metric, "full")
+		log.Println("[ERROR] metric:", w.Rule.Metric, "full")
 	}
 
 }

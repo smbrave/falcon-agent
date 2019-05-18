@@ -2,6 +2,7 @@ package gatherv2
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"time"
 
@@ -30,14 +31,14 @@ func (w *FileWatcher) Run() {
 			ob.Notify(line)
 		}
 	}
-	fmt.Println("[INFO] file:", w.MFile.File, "stoped")
+	log.Println("[INFO] file:", w.MFile.File, "stoped")
 }
 
 func (w *FileWatcher) Start() error {
 	//检查文件
 	fileInfo, err := os.Stat(w.MFile.File)
 	if err != nil {
-		fmt.Println("[ERROR] os.Stat(w.MFile.File) file:", w.MFile.File, "error:", err.Error())
+		log.Println("[ERROR] os.Stat(w.MFile.File) file:", w.MFile.File, "error:", err.Error())
 		return err
 	}
 
@@ -45,7 +46,7 @@ func (w *FileWatcher) Start() error {
 	for _, rule := range w.MFile.Rules {
 		rule := NewRuleWatcher(w, rule)
 		if err := rule.Start(); err != nil {
-			fmt.Println("[ERROR] rule run error:", err.Error())
+			log.Println("[ERROR] rule run error:", err.Error())
 			continue
 		}
 		w.Observer = append(w.Observer, rule)
@@ -58,7 +59,7 @@ func (w *FileWatcher) Start() error {
 
 	t, err := tail.TailFile(w.MFile.File, tailConfig)
 	if err != nil {
-		fmt.Println("[ERROR] file:", w.MFile.File, "error:", err.Error())
+		log.Println("[ERROR] file:", w.MFile.File, "error:", err.Error())
 		time.Sleep(time.Second)
 		return err
 	}
@@ -66,7 +67,7 @@ func (w *FileWatcher) Start() error {
 	//设置初始化偏移
 	t.Location = new(tail.SeekInfo)
 	t.Location.Offset = fileInfo.Size()
-	fmt.Println("[INFO] file:", w.MFile.File, "start success! offset:", fileInfo.Size())
+	log.Println("[INFO] file:", w.MFile.File, "start success! offset:", fileInfo.Size())
 	w.Tail = t
 	go w.Run()
 	return nil
@@ -76,7 +77,7 @@ func (w *FileWatcher) Stop() error {
 
 	for _, ob := range w.Observer {
 		if err := ob.Stop(); err != nil {
-			fmt.Println("[ERROR] stop ", w.MFile.File, "rule error:", err.Error())
+			log.Println("[ERROR] stop ", w.MFile.File, "rule error:", err.Error())
 		}
 	}
 	return w.Tail.Stop()
