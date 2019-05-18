@@ -1,7 +1,6 @@
 package gatherv2
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"time"
@@ -25,7 +24,7 @@ func NewFileWatcher(file *FileConf) *FileWatcher {
 func (w *FileWatcher) Run() {
 
 	for line := range w.Tail.Lines {
-		fmt.Println("[DEBUG] text:", line.Text)
+		//fmt.Println("[DEBUG] text:", line.Text)
 		//发送给每个观察则
 		for _, ob := range w.Observer {
 			ob.Notify(line)
