@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"net/http"
 	"time"
+
+	"github.com/toolkits/net/httplib"
 
 	"github.com/open-falcon/agent/g"
 )
@@ -16,7 +17,7 @@ var (
 )
 
 func Monitor(url string) *AgentData {
-	resp, err := http.Get(url)
+	resp, err := httplib.Get(url).Header("ak", "58a72222d1b7e5ab5a2b3c95a0dda245")
 	if err != nil {
 		fmt.Println("[ERROR] url:", url, "error:", err.Error())
 		return nil

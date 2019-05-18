@@ -8,8 +8,8 @@ import (
 	"github.com/open-falcon/agent/cron"
 	"github.com/open-falcon/agent/funcs"
 	"github.com/open-falcon/agent/g"
-	"github.com/open-falcon/agent/gatherv2"
 	"github.com/open-falcon/agent/http"
+	"github.com/smbrave/agent/gatherv2"
 )
 
 func main() {
