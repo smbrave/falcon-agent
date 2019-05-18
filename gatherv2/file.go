@@ -1,6 +1,7 @@
 package gatherv2
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"time"
@@ -24,7 +25,7 @@ func NewFileWatcher(file *FileConf) *FileWatcher {
 func (w *FileWatcher) Run() {
 
 	for line := range w.Tail.Lines {
-		//fmt.Println("[DEBUG] text:", line.Text)
+		fmt.Println("[DEBUG] text:", line.Text)
 		//发送给每个观察则
 		for _, ob := range w.Observer {
 			ob.Notify(line)
@@ -55,6 +56,9 @@ func (w *FileWatcher) Start() error {
 	var tailConfig tail.Config
 	tailConfig.Follow = true
 	tailConfig.ReOpen = true
+	tailConfig.Poll = true
+	tailConfig.Location = new(tail.SeekInfo)
+	tailConfig.Location.Offset = fileInfo.Size()
 
 	t, err := tail.TailFile(w.MFile.File, tailConfig)
 	if err != nil {
@@ -63,9 +67,6 @@ func (w *FileWatcher) Start() error {
 		return err
 	}
 
-	//设置初始化偏移
-	t.Location = new(tail.SeekInfo)
-	t.Location.Offset = fileInfo.Size()
 	log.Println("[INFO] file:", w.MFile.File, "start success! offset:", fileInfo.Size())
 	w.Tail = t
 	go w.Run()
