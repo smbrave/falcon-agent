@@ -3,12 +3,10 @@ package gatherv2
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"time"
 
-	"github.com/toolkits/net/httplib"
-
 	"github.com/open-falcon/agent/g"
+	"github.com/toolkits/net/httplib"
 )
 
 var (
@@ -17,26 +15,19 @@ var (
 )
 
 func Monitor(url string) *AgentData {
-	resp, err := httplib.Get(url).Header("ak", "58a72222d1b7e5ab5a2b3c95a0dda245")
-	if err != nil {
-		fmt.Println("[ERROR] url:", url, "error:", err.Error())
-		return nil
-	}
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
+	resp, err := httplib.Get(url).Header("ak", "58a72222d1b7e5ab5a2b3c95a0dda245").Bytes()
 	if err != nil {
 		fmt.Println("[ERROR] url:", url, "error:", err.Error())
 		return nil
 	}
 
 	var rsp ConfigResponse
-	if err := json.Unmarshal(body, &rsp); err != nil {
-		fmt.Println("[ERROR] url:", url, "body:", string(body), "error:", err.Error())
+	if err := json.Unmarshal(resp, &rsp); err != nil {
+		fmt.Println("[ERROR] url:", url, "body:", string(resp), "error:", err.Error())
 		return nil
 	}
 	if rsp.Errno != 0 {
-		fmt.Println("[ERROR] url:", url, "body:", string(body), "errno:", rsp.Errno, "message:", rsp.Errmsg)
+		fmt.Println("[ERROR] url:", url, "body:", string(resp), "errno:", rsp.Errno, "message:", rsp.Errmsg)
 		return nil
 	}
 
