@@ -64,7 +64,7 @@ func Update(data *AgentData) {
 }
 
 func Run() {
-	ticker := time.NewTicker(10 * time.Second)
+	ticker := time.NewTicker(3600 * time.Second)
 	hostname, _ := g.Hostname()
 	falcon := g.Config().Falcon
 	if falcon == "" {
