@@ -107,7 +107,11 @@ func (w *RuleWatcher) ReportData(tagStat map[string]*GatherStat) {
 	if len(tagStat) == 0 {
 		metric := new(model.MetricValue)
 		metric.Metric = w.Rule.Metric
-		metric.Tags = ""
+		if len(w.Rule.Tags) != 0 {
+			metric.Tags = "tag=all"
+		} else {
+			metric.Tags = ""
+		}
 		metric.Step = int64(w.FileWatcher.MFile.Step)
 		metric.Timestamp = time.Now().Unix()
 		metric.Endpoint = hostname
