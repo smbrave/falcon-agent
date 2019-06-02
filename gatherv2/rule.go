@@ -39,10 +39,10 @@ func (w *RuleWatcher) GatherData(value float64, tagKey string, tagsStat map[stri
 
 	//有tag的汇总一份总数据
 	if tagKey != "" {
-		if stat, ok = tagsStat[""]; !ok {
+		if stat, ok = tagsStat["tag=all"]; !ok {
 			stat = new(GatherStat)
 			stat.Rest()
-			tagsStat[""] = stat
+			tagsStat["tag=all"] = stat
 		}
 		stat.Counter += 1
 		stat.Total += value
